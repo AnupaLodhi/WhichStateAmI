@@ -2,6 +2,8 @@
 
 A fun and educational web application that challenges users to identify Indian states based on clues, maps, landmarks, cultural facts, or geographical hints. The project aims to improve users' knowledge of India's geography through an interactive quiz experience.
 
+Live: https://anupalodhi.github.io/WhichStateAmI/
+
 ## Features
 
 * 🇮🇳 Guess the Indian state from provided clues
