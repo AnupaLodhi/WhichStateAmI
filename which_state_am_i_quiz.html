@@ -1,0 +1,826 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Which State Am I? – India Quiz</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Playfair+Display:wght@700;800&display=swap" rel="stylesheet"/>
+<style>
+:root{
+  --saffron:#FF6B2B;--saffron-light:#FF8C55;--saffron-pale:#FFF3ED;
+  --green:#138808;--green-light:#1BA80A;--green-pale:#EDFFF0;
+  --navy:#002366;--navy-light:#1A3A7A;
+  --gold:#F5A623;--gold-light:#FFD166;
+  --white:#FFFFFF;--off:#F9F5F0;
+  --gray-100:#F3F0EB;--gray-200:#E8E2D9;--gray-300:#C8BFB3;--gray-500:#8A7F74;--gray-700:#4A4540;--gray-900:#1A1714;
+  --radius:16px;--radius-sm:10px;--shadow:0 4px 24px rgba(0,0,0,.1);--shadow-lg:0 12px 48px rgba(0,0,0,.18);
+}
+[data-dark]{
+  --white:#1A1714;--off:#221E1B;--gray-100:#2A2520;--gray-200:#332E28;--gray-300:#4A4540;--gray-500:#8A7F74;--gray-700:#C8BFB3;--gray-900:#F9F5F0;
+  --saffron-pale:#2A1A10;--green-pale:#0D1F0E;--navy:#3A5CA8;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Poppins',sans-serif;background:var(--off);color:var(--gray-900);transition:background .3s,color .3s;min-height:100vh}
+.app{max-width:900px;margin:0 auto;padding:16px}
+/* Header */
+.hdr{display:flex;align-items:center;justify-content:space-between;padding:16px 0 8px;flex-wrap:wrap;gap:8px}
+.logo{display:flex;align-items:center;gap:10px}
+.logo-icon{width:42px;height:42px;background:linear-gradient(135deg,var(--saffron),var(--gold));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:22px;box-shadow:0 2px 12px rgba(255,107,43,.3)}
+.logo-text{font-family:'Playfair Display',serif;font-size:20px;font-weight:800;background:linear-gradient(135deg,var(--saffron),var(--navy));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hdr-right{display:flex;gap:8px;align-items:center}
+.icon-btn{background:var(--gray-100);border:none;border-radius:10px;width:38px;height:38px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;transition:all .2s;color:var(--gray-900)}
+.icon-btn:hover{background:var(--gray-200);transform:scale(1.05)}
+/* Score strip */
+.score-strip{display:flex;gap:10px;margin:12px 0;flex-wrap:wrap}
+.score-card{background:var(--white);border-radius:var(--radius-sm);padding:10px 16px;flex:1;min-width:90px;text-align:center;box-shadow:var(--shadow)}
+.score-val{font-size:22px;font-weight:800;color:var(--saffron)}
+.score-lbl{font-size:10px;color:var(--gray-500);text-transform:uppercase;letter-spacing:.5px}
+/* Difficulty */
+.diff-row{display:flex;gap:8px;margin:8px 0}
+.diff-btn{flex:1;padding:8px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);background:var(--white);cursor:pointer;font-family:'Poppins',sans-serif;font-size:12px;font-weight:600;color:var(--gray-500);transition:all .2s;text-transform:uppercase;letter-spacing:.5px}
+.diff-btn.active-easy{border-color:#22C55E;background:#F0FDF4;color:#166534}
+.diff-btn.active-medium{border-color:var(--gold);background:#FFFBEB;color:#92400E}
+.diff-btn.active-hard{border-color:#EF4444;background:#FFF5F5;color:#991B1B}
+/* Timer */
+.timer-wrap{position:relative;height:8px;background:var(--gray-200);border-radius:99px;margin:12px 0;overflow:hidden}
+.timer-bar{height:100%;border-radius:99px;transition:width .9s linear,background .3s;background:linear-gradient(90deg,var(--green),var(--gold),var(--saffron))}
+/* Question card */
+.q-card{background:var(--white);border-radius:var(--radius);padding:24px;box-shadow:var(--shadow-lg);margin:12px 0;animation:slideUp .35s ease}
+@keyframes slideUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+.q-meta{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.q-num{font-size:11px;font-weight:600;color:var(--gray-500);text-transform:uppercase;letter-spacing:1px}
+.q-progress{font-size:11px;color:var(--gray-500)}
+.clue-section{background:linear-gradient(135deg,var(--saffron-pale),var(--green-pale));border-radius:var(--radius-sm);padding:20px;margin-bottom:16px;border-left:4px solid var(--saffron)}
+.clue-label{font-size:10px;font-weight:700;color:var(--saffron);text-transform:uppercase;letter-spacing:1px;margin-bottom:8px}
+.clue-text{font-size:15px;font-weight:500;color:var(--gray-900);line-height:1.6}
+.clue-icon{font-size:28px;margin-bottom:8px}
+.more-clue-btn{display:inline-flex;align-items:center;gap:6px;margin-top:12px;padding:6px 14px;background:var(--white);border:1px solid var(--gray-200);border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;color:var(--saffron);transition:all .2s;font-family:'Poppins',sans-serif}
+.more-clue-btn:hover{background:var(--saffron-pale);border-color:var(--saffron)}
+/* Options */
+.options-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0}
+@media(max-width:480px){.options-grid{grid-template-columns:1fr}}
+.opt-btn{padding:14px 16px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);background:var(--white);cursor:pointer;font-family:'Poppins',sans-serif;font-size:14px;font-weight:500;color:var(--gray-900);transition:all .22s;text-align:left;display:flex;align-items:center;gap:10px;line-height:1.3}
+.opt-btn:hover:not(:disabled){border-color:var(--saffron);background:var(--saffron-pale);transform:translateY(-2px);box-shadow:0 4px 16px rgba(255,107,43,.15)}
+.opt-btn.correct{border-color:var(--green) !important;background:var(--green-pale) !important;color:var(--green) !important;font-weight:700}
+.opt-btn.wrong{border-color:#EF4444 !important;background:#FFF5F5 !important;color:#EF4444 !important}
+.opt-btn:disabled{cursor:default}
+.opt-letter{width:28px;height:28px;border-radius:8px;background:var(--gray-100);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:var(--gray-500);flex-shrink:0;transition:all .2s}
+.opt-btn.correct .opt-letter{background:var(--green);color:#fff}
+.opt-btn.wrong .opt-letter{background:#EF4444;color:#fff}
+/* Feedback */
+.feedback{padding:14px 18px;border-radius:var(--radius-sm);margin:12px 0;animation:fadeIn .3s ease;font-size:13px;line-height:1.6}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.feedback.correct{background:var(--green-pale);border:1px solid var(--green);color:#166534}
+.feedback.wrong{background:#FFF5F5;border:1px solid #FCA5A5;color:#7F1D1D}
+.fun-fact{margin-top:8px;padding-top:8px;border-top:1px solid rgba(0,0,0,.08);font-style:italic;color:var(--gray-700)}
+/* Progress bar */
+.prog-bar-wrap{background:var(--gray-200);border-radius:99px;height:5px;margin:12px 0}
+.prog-bar{height:100%;border-radius:99px;background:linear-gradient(90deg,var(--saffron),var(--gold));transition:width .4s ease}
+/* Screens */
+.screen{animation:fadeIn .4s ease}
+/* Start screen */
+.start-card{background:var(--white);border-radius:var(--radius);padding:32px 28px;box-shadow:var(--shadow-lg);text-align:center;margin:24px 0}
+.start-hero{font-size:64px;margin-bottom:16px}
+.start-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:800;color:var(--saffron);margin-bottom:8px}
+.start-sub{color:var(--gray-500);font-size:14px;line-height:1.6;max-width:420px;margin:0 auto 24px}
+.features-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:20px 0;text-align:left}
+@media(max-width:480px){.features-grid{grid-template-columns:1fr}}
+.feat-item{display:flex;align-items:flex-start;gap:10px;padding:12px;background:var(--gray-100);border-radius:var(--radius-sm)}
+.feat-icon{font-size:20px;flex-shrink:0}
+.feat-text{font-size:12px;color:var(--gray-700);font-weight:500}
+/* Buttons */
+.btn{padding:13px 28px;border-radius:var(--radius-sm);border:none;cursor:pointer;font-family:'Poppins',sans-serif;font-size:14px;font-weight:700;transition:all .22s;display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:linear-gradient(135deg,var(--saffron),#FF4500);color:#fff;box-shadow:0 4px 18px rgba(255,107,43,.35)}
+.btn-primary:hover{transform:translateY(-2px);box-shadow:0 8px 28px rgba(255,107,43,.45)}
+.btn-secondary{background:var(--gray-100);color:var(--gray-700)}
+.btn-secondary:hover{background:var(--gray-200)}
+.btn-green{background:linear-gradient(135deg,var(--green),#0F7A0A);color:#fff;box-shadow:0 4px 18px rgba(19,136,8,.3)}
+/* End screen */
+.end-card{background:var(--white);border-radius:var(--radius);padding:32px 28px;box-shadow:var(--shadow-lg);text-align:center;margin:16px 0}
+.result-emoji{font-size:72px;margin-bottom:12px}
+.result-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:800;margin-bottom:8px}
+.result-score-big{font-size:52px;font-weight:800;color:var(--saffron);line-height:1}
+.result-score-sub{font-size:14px;color:var(--gray-500);margin-bottom:20px}
+.result-msg{color:var(--gray-700);font-size:14px;line-height:1.7;max-width:400px;margin:0 auto 20px}
+/* Badges */
+.badges-wrap{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;margin:20px 0}
+.badge{padding:10px 18px;border-radius:30px;font-size:13px;font-weight:700;display:flex;align-items:center;gap:8px}
+.badge-earned{background:linear-gradient(135deg,var(--gold),var(--saffron));color:#fff;box-shadow:0 4px 12px rgba(245,166,35,.4)}
+.badge-locked{background:var(--gray-100);color:var(--gray-300)}
+/* Leaderboard */
+.lb-card{background:var(--white);border-radius:var(--radius);padding:20px;box-shadow:var(--shadow);margin:12px 0}
+.lb-title{font-weight:700;font-size:15px;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.lb-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:var(--radius-sm);margin-bottom:6px;background:var(--gray-100)}
+.lb-rank{width:24px;height:24px;border-radius:50%;background:var(--gray-200);display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:var(--gray-500);flex-shrink:0}
+.lb-rank.gold{background:var(--gold);color:#fff}
+.lb-rank.silver{background:#A8A8A8;color:#fff}
+.lb-rank.bronze{background:#CD7F32;color:#fff}
+.lb-name{flex:1;font-size:13px;font-weight:600}
+.lb-score{font-size:13px;font-weight:700;color:var(--saffron)}
+.lb-diff{font-size:10px;color:var(--gray-500);background:var(--gray-200);padding:2px 6px;border-radius:4px}
+.name-input-wrap{display:flex;gap:8px;margin-bottom:16px}
+.name-input{flex:1;padding:10px 14px;border:2px solid var(--gray-200);border-radius:var(--radius-sm);font-family:'Poppins',sans-serif;font-size:14px;background:var(--white);color:var(--gray-900);outline:none;transition:border-color .2s}
+.name-input:focus{border-color:var(--saffron)}
+.divider{height:1px;background:var(--gray-200);margin:16px 0}
+.ashoka-wheel{display:inline-block;color:var(--navy);animation:spin 8s linear infinite;font-size:20px}
+@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+.tag{display:inline-block;padding:3px 8px;border-radius:5px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-right:6px}
+.tag-monument{background:#EEF2FF;color:#4338CA}
+.tag-food{background:#FFF7ED;color:#C2410C}
+.tag-festival{background:#FDF4FF;color:#7C3AED}
+.tag-lang{background:#F0FDF4;color:#166534}
+.tag-dance{background:#FFF1F2;color:#BE123C}
+.tag-nature{background:#ECFDF5;color:#065F46}
+.tag-history{background:#FFFBEB;color:#92400E}
+.skip-btn{background:none;border:none;cursor:pointer;font-size:12px;color:var(--gray-400,#9CA3AF);font-family:'Poppins',sans-serif;padding:4px 8px;border-radius:6px;transition:color .2s}
+.skip-btn:hover{color:var(--saffron)}
+</style>
+</head>
+<body>
+<div class="app" id="root"></div>
+
+<script>
+// ─── DATA ────────────────────────────────────────────────────────────────────
+const STATES = [
+  {
+    id:1,name:"Rajasthan",
+    clues:[
+      {icon:"🏰",type:"monument",tag:"monument",text:"I am home to the majestic Amber Fort and the blue city of Jodhpur."},
+      {icon:"🎪",type:"festival",tag:"festival",text:"My famous Pushkar Camel Fair attracts traders and tourists from 100+ countries."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Ghoomar dance — twirling veils and mirror-work lehengas — originated here."},
+      {icon:"🍛",type:"food",tag:"food",text:"Dal Baati Churma is my signature dish, eaten at festivals and weddings."},
+      {icon:"🦚",type:"nature",tag:"nature",text:"I have the Ranthambore National Park, one of India's best tiger reserves."},
+    ],
+    funFact:"Rajasthan is India's largest state by area and has more forts than any other state — over 500!"
+  },
+  {
+    id:2,name:"Kerala",
+    clues:[
+      {icon:"🌴",type:"nature",tag:"nature",text:"Called 'God's Own Country,' I have stunning backwaters and coconut-fringed shores."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Kathakali — performers in elaborate green make-up telling stories from epics — is my gift to India."},
+      {icon:"🍛",type:"food",tag:"food",text:"Puttu and Kadala Curry is my beloved morning breakfast."},
+      {icon:"🐘",type:"festival",tag:"festival",text:"Thrissur Pooram is the grandest temple festival in India, with decorated elephants."},
+      {icon:"🎓",type:"history",tag:"history",text:"I was the first Indian state to achieve 100% literacy."},
+    ],
+    funFact:"Kerala has the highest Human Development Index (HDI) among all Indian states."
+  },
+  {
+    id:3,name:"Punjab",
+    clues:[
+      {icon:"🌾",type:"history",tag:"history",text:"Called the 'Breadbasket of India,' my fields of wheat and rice feed the nation."},
+      {icon:"🛕",type:"monument",tag:"monument",text:"The Golden Temple (Harmandir Sahib) in Amritsar is my most sacred shrine."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Bhangra — energetic harvest dance with dhol beats — is my cultural export to the world."},
+      {icon:"🍗",type:"food",tag:"food",text:"Butter Chicken and Makki di Roti with Sarson da Saag were born in my kitchens."},
+      {icon:"🎆",type:"festival",tag:"festival",text:"I celebrate Baisakhi every April as a harvest festival and Sikh New Year."},
+    ],
+    funFact:"Punjab means 'Land of Five Rivers' — Jhelum, Chenab, Ravi, Beas, and Sutlej."
+  },
+  {
+    id:4,name:"Tamil Nadu",
+    clues:[
+      {icon:"🛕",type:"monument",tag:"monument",text:"My Brihadeeswarar Temple in Thanjavur is a UNESCO World Heritage Site built in 1010 CE."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Bharatanatyam — one of India's oldest classical dance forms — flourished in my temples."},
+      {icon:"🍛",type:"food",tag:"food",text:"Idli, Dosa, and Filter Kaapi are my contributions to Indian breakfast culture."},
+      {icon:"🗣️",type:"lang",tag:"lang",text:"I speak Tamil — one of the world's oldest living languages, over 2,000 years old."},
+      {icon:"🎭",type:"festival",tag:"festival",text:"Pongal is my four-day harvest festival celebrated in January."},
+    ],
+    funFact:"Tamil Nadu has the highest number of temples of any Indian state — estimated over 38,000!"
+  },
+  {
+    id:5,name:"West Bengal",
+    clues:[
+      {icon:"🎨",type:"history",tag:"history",text:"I was the cradle of Bengal Renaissance — Nobel laureates Rabindranath Tagore and Amartya Sen are my sons."},
+      {icon:"🎭",type:"festival",tag:"festival",text:"Durga Puja in my capital transforms the city into the world's largest art festival."},
+      {icon:"🍛",type:"food",tag:"food",text:"Mishti Doi, Rasgolla, and fish curry are the heart of my cuisine."},
+      {icon:"🐯",type:"nature",tag:"nature",text:"The Sundarbans — world's largest mangrove forest and home to the Royal Bengal Tiger — is mine."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Rabindra Nritya (Tagore dance) and Baul folk music define my artistic soul."},
+    ],
+    funFact:"Kolkata's Howrah Bridge carries over 100,000 vehicles and 150,000 pedestrians every single day."
+  },
+  {
+    id:6,name:"Gujarat",
+    clues:[
+      {icon:"💃",type:"dance",tag:"dance",text:"Garba and Dandiya Raas — my folk dances — are performed during Navratri by millions worldwide."},
+      {icon:"🦁",type:"nature",tag:"nature",text:"The Gir Forest is the only place in the world with wild Asiatic Lions."},
+      {icon:"🍛",type:"food",tag:"food",text:"Dhokla, Thepla, and Fafda are my globally loved vegetarian snacks."},
+      {icon:"🏛️",type:"monument",tag:"monument",text:"The Statue of Unity — the world's tallest statue (182m) — stands on the Narmada River."},
+      {icon:"🎪",type:"festival",tag:"festival",text:"The International Kite Festival (Uttarayan) on January 14 fills my skies."},
+    ],
+    funFact:"Gujarat is the birthplace of Mahatma Gandhi and also where India's first cotton textile mill was established."
+  },
+  {
+    id:7,name:"Maharashtra",
+    clues:[
+      {icon:"🏙️",type:"history",tag:"history",text:"My capital Mumbai is India's financial capital, home to Bollywood and the BSE."},
+      {icon:"🛕",type:"monument",tag:"monument",text:"Ajanta and Ellora Caves — UNESCO-listed Buddhist and Hindu rock-cut temples — are in my heart."},
+      {icon:"🎭",type:"festival",tag:"festival",text:"Ganesh Chaturthi, with its massive processions, is my grandest festival."},
+      {icon:"🍛",type:"food",tag:"food",text:"Vada Pav — Mumbai's street burger — and Puran Poli are my iconic foods."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Lavani dance with its expressive rhythms is my traditional performance art."},
+    ],
+    funFact:"Maharashtra has the highest number of billionaires of any Indian state."
+  },
+  {
+    id:8,name:"Madhya Pradesh",
+    clues:[
+      {icon:"🐯",type:"nature",tag:"nature",text:"I have more tigers than any other Indian state, with Bandhavgarh, Kanha, and Pench reserves."},
+      {icon:"🛕",type:"monument",tag:"monument",text:"Khajuraho temples — UNESCO site famous for intricate erotic sculptures — are in my territory."},
+      {icon:"🗣️",type:"lang",tag:"lang",text:"I am called the 'Heart of India' and sit geographically at the center of the country."},
+      {icon:"🎨",type:"history",tag:"history",text:"Bhimbetka rock shelters have cave paintings that are 30,000 years old."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Gond tribal art and Rai dance of the Bundela region are my cultural treasures."},
+    ],
+    funFact:"Madhya Pradesh is India's second-largest state by area and has more UNESCO heritage sites than most other states."
+  },
+  {
+    id:9,name:"Uttar Pradesh",
+    clues:[
+      {icon:"🕌",type:"monument",tag:"monument",text:"The Taj Mahal — one of the Seven Wonders of the World — stands on my banks of the Yamuna."},
+      {icon:"🕉️",type:"history",tag:"history",text:"I am home to Varanasi, one of the world's oldest continuously inhabited cities."},
+      {icon:"🎭",type:"festival",tag:"festival",text:"The Kumbh Mela — the world's largest peaceful gathering — takes place in my Prayagraj."},
+      {icon:"🍛",type:"food",tag:"food",text:"Lucknawi Biryani, Tunday Kebab, and Petha (Agra's sweet) are my delicacies."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Kathak classical dance was born and perfected in my courts of Lucknow and Jaipur."},
+    ],
+    funFact:"UP has the highest population of any Indian state — over 240 million people, more than Brazil."
+  },
+  {
+    id:10,name:"Karnataka",
+    clues:[
+      {icon:"🏛️",type:"monument",tag:"monument",text:"Hampi — a UNESCO-listed ruined city of the Vijayanagara Empire — lies in my landscape."},
+      {icon:"🛕",type:"monument",tag:"monument",text:"Mysore Palace, one of India's most visited monuments, is lit up by 97,000 bulbs on weekends."},
+      {icon:"🍛",type:"food",tag:"food",text:"Bisi Bele Bath, Mangalore fish curry, and Filter Coffee are my culinary stars."},
+      {icon:"🌸",type:"festival",tag:"festival",text:"Mysuru Dasara (Navaratri) with the royal elephant procession is India's most colorful state festival."},
+      {icon:"💻",type:"history",tag:"history",text:"My capital Bengaluru is India's Silicon Valley, hosting over 1,000 tech companies."},
+    ],
+    funFact:"Coorg (Kodagu) in Karnataka produces the most coffee in India and has the highest literacy rate in the state."
+  },
+  {
+    id:11,name:"Himachal Pradesh",
+    clues:[
+      {icon:"🏔️",type:"nature",tag:"nature",text:"My snow-capped Himalayan valleys — Shimla, Manali, Spiti — are India's premier hill destinations."},
+      {icon:"🍎",type:"food",tag:"food",text:"I produce 80% of India's apple crop — Himachali apples are known worldwide."},
+      {icon:"🎨",type:"history",tag:"history",text:"Kangra miniature paintings from my valley are famous across the world."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Kullu Dussehra festival with its Nati folk dance is my grandest annual celebration."},
+      {icon:"🛕",type:"monument",tag:"monument",text:"Hidimba Devi Temple in Manali and Tabo Monastery in Spiti are my sacred jewels."},
+    ],
+    funFact:"Himachal Pradesh was the first Indian state to host the Winter Olympics sports events in 1988 (Spiti Valley)."
+  },
+  {
+    id:12,name:"Goa",
+    clues:[
+      {icon:"🏖️",type:"nature",tag:"nature",text:"I have over 100 km of pristine beaches on the Arabian Sea — India's party capital."},
+      {icon:"⛪",type:"monument",tag:"monument",text:"Old Goa's Basilica of Bom Jesus, with St. Francis Xavier's relics, is a UNESCO World Heritage Site."},
+      {icon:"🍖",type:"food",tag:"food",text:"Vindaloo, Fish Curry Rice, and Bebinca (layered cake) define my Portuguese-influenced cuisine."},
+      {icon:"🎉",type:"festival",tag:"festival",text:"Carnival — a colourful pre-Lenten street festival with parades — is uniquely mine in India."},
+      {icon:"🗣️",type:"lang",tag:"lang",text:"Konkani is my official language; I was a Portuguese colony until 1961."},
+    ],
+    funFact:"Goa is India's smallest state by area but has the highest per capita income of any Indian state."
+  },
+  {
+    id:13,name:"Assam",
+    clues:[
+      {icon:"🦏",type:"nature",tag:"nature",text:"Kaziranga National Park — home to 2/3 of the world's one-horned rhinoceroses — is my crown jewel."},
+      {icon:"🍵",type:"food",tag:"food",text:"I produce the world's largest volume of tea — Assam tea is a global breakfast staple."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Bihu dance performed during the Rongali Bihu festival is my most joyous tradition."},
+      {icon:"🎭",type:"festival",tag:"festival",text:"Bihu (three types: Rongali, Bhogali, Kongali) marks the entire agricultural cycle."},
+      {icon:"🌊",type:"nature",tag:"nature",text:"The Brahmaputra River flows through me — one of the world's largest river islands is Majuli, in my state."},
+    ],
+    funFact:"Majuli in Assam is the world's largest river island, home to ancient Vaishnavite monasteries called Satras."
+  },
+  {
+    id:14,name:"Odisha",
+    clues:[
+      {icon:"🛕",type:"monument",tag:"monument",text:"The Jagannath Temple in Puri and the Sun Temple at Konark are my architectural masterpieces."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Odissi — one of India's most graceful classical dance forms — was born in my temple traditions."},
+      {icon:"🎭",type:"festival",tag:"festival",text:"Rath Yatra — the Chariot Festival of Lord Jagannath — attracts millions to Puri every year."},
+      {icon:"🎨",type:"history",tag:"history",text:"Pattachitra scroll painting and Appliqué craft of Pipli are my unique art forms."},
+      {icon:"🐢",type:"nature",tag:"nature",text:"Gahirmatha Beach hosts the world's largest mass nesting of Olive Ridley sea turtles."},
+    ],
+    funFact:"Konark Sun Temple's architecture is so precise that it works as a giant sundial — accurate to the minute."
+  },
+  {
+    id:15,name:"Bihar",
+    clues:[
+      {icon:"🕉️",type:"history",tag:"history",text:"Bodh Gaya, where Siddhartha Gautama attained enlightenment under the Bodhi tree, is in my land."},
+      {icon:"📚",type:"history",tag:"history",text:"Nalanda University — the world's first residential university (5th century CE) — flourished here."},
+      {icon:"🎭",type:"festival",tag:"festival",text:"Chhath Puja — the world's largest sun-worship festival — originated in my rivers."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Jat-Jatin folk dance and Bidesia theatre are my beloved performing arts."},
+      {icon:"🍛",type:"food",tag:"food",text:"Litti Chokha — roasted wheat balls with mashed brinjal — is my signature dish."},
+    ],
+    funFact:"Bihar's Chandragupta Maurya founded the Maurya Empire from here — the first empire to unify most of the Indian subcontinent."
+  },
+  {
+    id:16,name:"Telangana",
+    clues:[
+      {icon:"🏙️",type:"history",tag:"history",text:"My capital Hyderabad is known as Cyberabad — a global IT hub and the City of Pearls."},
+      {icon:"🍛",type:"food",tag:"food",text:"Hyderabadi Dum Biryani — slow-cooked in sealed pots — is considered the king of all biryanis."},
+      {icon:"🏛️",type:"monument",tag:"monument",text:"Charminar — the iconic 16th-century mosque-and-minaret in Hyderabad — is my symbol."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Perini Shivatandavam — a vigorous warrior dance once performed before battles — was revived in my state."},
+      {icon:"🎭",type:"festival",tag:"festival",text:"Bathukamma — a floral festival where women create flower stacks — is uniquely mine."},
+    ],
+    funFact:"Telangana became India's 29th state only in 2014, carved out of Andhra Pradesh after a long movement."
+  },
+  {
+    id:17,name:"Uttarakhand",
+    clues:[
+      {icon:"🏔️",type:"nature",tag:"nature",text:"Called 'Devbhoomi' (Land of Gods), I have four sacred Char Dham pilgrimage sites."},
+      {icon:"🦅",type:"nature",tag:"nature",text:"Jim Corbett National Park — India's oldest national park — is in my forests."},
+      {icon:"🧘",type:"history",tag:"history",text:"Rishikesh, the 'Yoga Capital of the World,' sits on the banks of the Ganga in my territory."},
+      {icon:"🌸",type:"nature",tag:"nature",text:"Valley of Flowers National Park is a UNESCO World Heritage Site in my high Himalayas."},
+      {icon:"🍛",type:"food",tag:"food",text:"Kafuli (spinach curry) and Bal Mithai (chocolate-coated fudge) are my local treasures."},
+    ],
+    funFact:"Uttarakhand's Gangotri is the source of the Ganges — one of the world's most important rivers."
+  },
+  {
+    id:18,name:"Andhra Pradesh",
+    clues:[
+      {icon:"🌶️",type:"food",tag:"food",text:"I produce 25% of India's chillies — Guntur chillies are among the world's hottest."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Kuchipudi — a dance-drama where artists balance pots of water on their heads — is my invention."},
+      {icon:"🛕",type:"monument",tag:"monument",text:"Tirupati Balaji (Venkateswara Temple) is the world's richest and most-visited religious site."},
+      {icon:"🎭",type:"festival",tag:"festival",text:"Ugadi — Telugu New Year — is celebrated with Pachadi, a dish of six flavours symbolising life."},
+      {icon:"💎",type:"history",tag:"history",text:"The Golconda Fort near Hyderabad produced the famous Koh-i-Noor diamond."},
+    ],
+    funFact:"Tirupati Temple receives more visitors than the Vatican and Mecca — over 50,000 pilgrims a day on peak days."
+  },
+  {
+    id:19,name:"Manipur",
+    clues:[
+      {icon:"💃",type:"dance",tag:"dance",text:"Manipuri dance — known for its graceful, lyrical movements and Ras Lila — is one of India's 8 classical dances."},
+      {icon:"🌊",type:"nature",tag:"nature",text:"Loktak Lake is the largest freshwater lake in Northeast India, with floating phumdis (biomass islands)."},
+      {icon:"🥊",type:"history",tag:"history",text:"Polo was invented here — the 'Birthplace of Polo.'"},
+      {icon:"🎭",type:"festival",tag:"festival",text:"Yaoshang (Holi) in Manipur is a five-day festival — one of the longest Holi celebrations in India."},
+      {icon:"🌺",type:"nature",tag:"nature",text:"The Shirui Lily — a rare pink flower — grows only on Shirui Hill in my state, nowhere else on Earth."},
+    ],
+    funFact:"Manipur's Sangai (Brow-antlered deer) is found only here — it dances on floating grass mats in Loktak Lake."
+  },
+  {
+    id:20,name:"Meghalaya",
+    clues:[
+      {icon:"🌧️",type:"nature",tag:"nature",text:"Mawsynram and Cherrapunji in my state receive the highest rainfall on Earth."},
+      {icon:"🌉",type:"monument",tag:"monument",text:"Living Root Bridges — grown from aerial roots of rubber trees by the Khasi tribe — are my wonder."},
+      {icon:"🎶",type:"history",tag:"history",text:"Known as the 'Scotland of the East' for my rolling hills and pleasant climate."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Nongkrem Dance — a thanksgiving ritual of the Khasi tribe performed by virgins — is uniquely mine."},
+      {icon:"🍛",type:"food",tag:"food",text:"Jadoh (rice and meat) and Tungtap (fermented fish chutney) are my traditional foods."},
+    ],
+    funFact:"Meghalaya is one of two states (with Mizoram) where women are the head of the family — a matrilineal society."
+  },
+  {
+    id:21,name:"Sikkim",
+    clues:[
+      {icon:"🏔️",type:"nature",tag:"nature",text:"Kangchenjunga — the world's third-highest peak — watches over my landscape."},
+      {icon:"🧘",type:"history",tag:"history",text:"I am India's first fully organic state, farming without chemical pesticides or fertilisers."},
+      {icon:"🎭",type:"festival",tag:"festival",text:"Losar (Tibetan New Year) and Saga Dawa Buddhist festivals bring my monasteries alive."},
+      {icon:"🍵",type:"food",tag:"food",text:"Thukpa (noodle soup), Momos, and Chhang (millet beer) are my mountain staples."},
+      {icon:"🦋",type:"nature",tag:"nature",text:"I have over 650 species of butterflies and 4,000 species of flowering plants in a tiny area."},
+    ],
+    funFact:"Sikkim only became part of India in 1975, making it the youngest state. It's also India's least populous state."
+  },
+  {
+    id:22,name:"Nagaland",
+    clues:[
+      {icon:"🎪",type:"festival",tag:"festival",text:"Hornbill Festival — the 'Festival of Festivals' — showcases the traditions of all 16 Naga tribes in December."},
+      {icon:"🌶️",type:"food",tag:"food",text:"Raja Mirchi (Bhut Jolokia) — once the world's hottest chilli pepper — grows in my fields."},
+      {icon:"💃",type:"dance",tag:"dance",text:"My warrior dances with spears and headdresses made of hornbill feathers are unforgettable."},
+      {icon:"🐦",type:"nature",tag:"nature",text:"Amur Falcons — millions of tiny migratory raptors — pass through Doyang Lake in my state each year."},
+      {icon:"🗣️",type:"lang",tag:"lang",text:"I have 16 officially recognized tribes — each with its own language, making English our common tongue."},
+    ],
+    funFact:"Nagaland is the only Indian state where the majority population is Christian (nearly 90%)."
+  },
+  {
+    id:23,name:"Jharkhand",
+    clues:[
+      {icon:"🌿",type:"nature",tag:"nature",text:"Called the 'Land of Forests,' I was carved out of Bihar in 2000 for the tribal people of Chotanagpur."},
+      {icon:"⛏️",type:"history",tag:"history",text:"I have India's richest mineral reserves — coal, iron ore, copper, and mica — an industrial powerhouse."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Chhau dance — a martial-influenced tribal performance using masks — is my UNESCO-recognized art."},
+      {icon:"🌊",type:"nature",tag:"nature",text:"Hundru Falls and Dassam Falls are among India's most spectacular waterfalls, in my jungles."},
+      {icon:"🍛",type:"food",tag:"food",text:"Thekua (deep-fried sweet), Litti Chokha, and Handia (rice beer) are my tribal food staples."},
+    ],
+    funFact:"Cricket legend MS Dhoni is from Ranchi, Jharkhand — the state is passionate about cricket."
+  },
+  {
+    id:24,name:"Chhattisgarh",
+    clues:[
+      {icon:"🌿",type:"nature",tag:"nature",text:"Nearly 44% of my area is covered in forests — more than any other central Indian state."},
+      {icon:"🛕",type:"monument",tag:"monument",text:"Chitrakoot Waterfalls — the widest waterfall in India (300m) — roars through my jungles."},
+      {icon:"🎨",type:"history",tag:"history",text:"Bastar Dussehra — the world's longest festival (75 days) — is celebrated by tribal communities."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Panthi, Raut Nacha, and Karma dance are my vibrant tribal performance traditions."},
+      {icon:"🍛",type:"food",tag:"food",text:"Chila (rice-flour crepes), Muthiya, and Faraa steamed dumplings are my daily staples."},
+    ],
+    funFact:"Chhattisgarh means 'Thirty-six Forts' — it was named after the 36 fortified kingdoms that once existed here."
+  },
+  {
+    id:25,name:"Arunachal Pradesh",
+    clues:[
+      {icon:"🌅",type:"nature",tag:"nature",text:"I am 'The Land of the Dawn-Lit Mountains' — the first place in India to see the sunrise."},
+      {icon:"🏔️",type:"nature",tag:"nature",text:"I share borders with China, Bhutan, and Myanmar — the most remote frontier of India."},
+      {icon:"🛕",type:"monument",tag:"monument",text:"Tawang Monastery is the largest Buddhist monastery in India and the second-largest in the world."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Ponung dance of the Adi tribe is performed during the Solung festival with bamboo instruments."},
+      {icon:"🦅",type:"nature",tag:"nature",text:"I have more biodiversity per sq km than almost anywhere on Earth — including rare snow leopards."},
+    ],
+    funFact:"Arunachal Pradesh has over 26 major tribes and 100 sub-tribes, each with its own distinct language and culture."
+  },
+  {
+    id:26,name:"Mizoram",
+    clues:[
+      {icon:"🌄",type:"nature",tag:"nature",text:"My hills — called the 'Blue Mountain State' — are covered in bamboo forests and terraced fields."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Cheraw (Bamboo Dance) — where dancers weave between moving bamboo poles — is my signature art."},
+      {icon:"🦋",type:"nature",tag:"nature",text:"Blue Vanda orchid — Mizoram's state flower — and Blue Peacock Pheasant are my rare symbols."},
+      {icon:"🎭",type:"festival",tag:"festival",text:"Chapchar Kut — a spring festival after bamboo cutting — is Mizoram's most joyous celebration."},
+      {icon:"📚",type:"history",tag:"history",text:"I have a literacy rate of over 91% — one of the highest in India."},
+    ],
+    funFact:"Mizoram is one of India's safest states with the lowest crime rate, and it has very high gender equality."
+  },
+  {
+    id:27,name:"Tripura",
+    clues:[
+      {icon:"🛕",type:"monument",tag:"monument",text:"Ujjayanta Palace in Agartala — a royal palace-turned-museum — is my architectural crown."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Hojagiri dance — performed by Reang women balancing earthen pots on their heads — is uniquely mine."},
+      {icon:"🎭",type:"festival",tag:"festival",text:"Garia Puja — the fertility festival of the Tripuri people — is my most important tribal celebration."},
+      {icon:"🗣️",type:"lang",tag:"lang",text:"Bengali and Kokborok are my official languages — I am one of the most linguistically diverse small states."},
+      {icon:"🦋",type:"nature",tag:"nature",text:"Sepahijala Wildlife Sanctuary has the rare Spectacled Monkey and Clouded Leopard."},
+    ],
+    funFact:"Tripura is surrounded on three sides by Bangladesh and has more Buddhist temples per capita than most other Indian states."
+  },
+  {
+    id:28,name:"Haryana",
+    clues:[
+      {icon:"🥊",type:"history",tag:"history",text:"I produce more Olympic medal-winning wrestlers and boxers per capita than any other Indian state."},
+      {icon:"🏙️",type:"history",tag:"history",text:"Kurukshetra — where the Mahabharata war was fought and the Bhagavad Gita was revealed — is in my land."},
+      {icon:"🍛",type:"food",tag:"food",text:"Bajre ki Khichdi, Kachri ki Sabzi, and Churma Ladoo are my hearty rural dishes."},
+      {icon:"💃",type:"dance",tag:"dance",text:"Phag dance (during Holi) and Dhamal folk dance define my vibrant rural celebrations."},
+      {icon:"🌾",type:"nature",tag:"nature",text:"I grow 70% of India's basmati rice exports — my fields supply premium rice to the world."},
+    ],
+    funFact:"Haryana became the first Indian state to provide piped water to every household (Har Ghar Nal Se Jal)."
+  },
+];
+
+const BADGES = [
+  {id:'explorer',name:'Explorer',icon:'🧭',desc:'Complete your first quiz',condition:(score,total,diff)=>true},
+  {id:'culture',name:'Culture Expert',icon:'🎭',desc:'Score 70%+ on Medium or Hard',condition:(score,total,diff)=>score/total>=0.7&&diff!=='easy'},
+  {id:'master',name:'India Master',icon:'🏆',desc:'Score 90%+ on Hard difficulty',condition:(score,total,diff)=>score/total>=0.9&&diff==='hard'},
+  {id:'speedster',name:'Speedster',icon:'⚡',desc:'Complete quiz with 200s+ time bonus',condition:(score,total,diff,timeBonus)=>timeBonus>=200},
+  {id:'perfectionist',name:'Perfectionist',icon:'💯',desc:'Get a perfect score',condition:(score,total,diff)=>score===total},
+];
+
+const TIMERS={easy:30,medium:20,hard:12};
+const CLUES_BY_DIFF={easy:1,medium:2,hard:3};
+const QS_COUNT=10;
+
+function shuffle(arr){return [...arr].sort(()=>Math.random()-.5)}
+
+function getOptions(correct,all){
+  const others=shuffle(all.filter(s=>s.name!==correct.name)).slice(0,3);
+  return shuffle([correct,...others]);
+}
+
+function buildQuiz(diff){
+  const pool=shuffle(STATES).slice(0,QS_COUNT);
+  return pool.map(state=>{
+    const clueCount=CLUES_BY_DIFF[diff];
+    const clues=shuffle(state.clues).slice(0,Math.min(clueCount,state.clues.length));
+    return{state,clues,options:getOptions(state,STATES)};
+  });
+}
+
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let appState={
+  screen:'start',// start | quiz | end
+  dark:false,
+  diff:'medium',
+  quiz:[],
+  qIndex:0,
+  score:0,
+  timeBonus:0,
+  timeLeft:0,
+  timerRef:null,
+  answered:null,// null | {correct:bool, chosen:string}
+  cluesRevealed:1,
+  leaderboard:JSON.parse(localStorage.getItem('wsai_lb')||'[]'),
+  playerName:localStorage.getItem('wsai_name')||'',
+  earnedBadges:[],
+};
+
+function setState(patch){
+  Object.assign(appState,typeof patch==='function'?patch(appState):patch);
+  render();
+}
+
+// ─── TIMER ───────────────────────────────────────────────────────────────────
+function startTimer(){
+  clearTimer();
+  const secs=TIMERS[appState.diff];
+  setState({timeLeft:secs});
+  appState.timerRef=setInterval(()=>{
+    if(appState.answered!==null){clearTimer();return;}
+    const t=appState.timeLeft-1;
+    if(t<=0){
+      clearTimer();
+      handleAnswer('__timeout__');
+    } else {
+      appState.timeLeft=t;
+      renderTimerOnly();
+    }
+  },1000);
+}
+function clearTimer(){if(appState.timerRef){clearInterval(appState.timerRef);appState.timerRef=null;}}
+function renderTimerOnly(){
+  const bar=document.getElementById('timer-bar');
+  const lbl=document.getElementById('timer-lbl');
+  if(!bar||!lbl)return;
+  const pct=(appState.timeLeft/TIMERS[appState.diff])*100;
+  bar.style.width=pct+'%';
+  bar.style.background=pct>60?'linear-gradient(90deg,#22C55E,#86EFAC)':pct>30?'linear-gradient(90deg,#F59E0B,#FCD34D)':'linear-gradient(90deg,#EF4444,#FCA5A5)';
+  lbl.textContent=appState.timeLeft+'s';
+}
+
+// ─── ACTIONS ─────────────────────────────────────────────────────────────────
+function startQuiz(){
+  clearTimer();
+  const quiz=buildQuiz(appState.diff);
+  setState({screen:'quiz',quiz,qIndex:0,score:0,timeBonus:0,answered:null,cluesRevealed:1,earnedBadges:[]});
+  setTimeout(startTimer,50);
+}
+
+function handleAnswer(chosen){
+  clearTimer();
+  if(appState.answered!==null)return;
+  const q=appState.quiz[appState.qIndex];
+  const correct=q.state.name===chosen;
+  const bonus=correct?appState.timeLeft:0;
+  setState(s=>({
+    answered:{correct,chosen},
+    score:correct?s.score+1:s.score,
+    timeBonus:s.timeBonus+bonus,
+  }));
+}
+
+function nextQuestion(){
+  const next=appState.qIndex+1;
+  if(next>=appState.quiz.length){
+    // end
+    clearTimer();
+    const badges=BADGES.filter(b=>b.condition(appState.score,appState.quiz.length,appState.diff,appState.timeBonus));
+    setState({screen:'end',earnedBadges:badges});
+  } else {
+    setState({qIndex:next,answered:null,cluesRevealed:1});
+    setTimeout(startTimer,50);
+  }
+}
+
+function revealClue(){
+  const q=appState.quiz[appState.qIndex];
+  if(appState.cluesRevealed<q.clues.length){
+    setState(s=>({cluesRevealed:s.cluesRevealed+1}));
+  }
+}
+
+function saveScore(){
+  const name=appState.playerName.trim()||'Anonymous';
+  const entry={name,score:appState.score,total:appState.quiz.length,diff:appState.diff,date:new Date().toLocaleDateString(),timeBonus:appState.timeBonus};
+  const lb=[entry,...appState.leaderboard].sort((a,b)=>b.score-a.score||b.timeBonus-a.timeBonus).slice(0,10);
+  localStorage.setItem('wsai_lb',JSON.stringify(lb));
+  localStorage.setItem('wsai_name',name);
+  setState({leaderboard:lb,playerName:name});
+}
+
+function toggleDark(){
+  const d=!appState.dark;
+  document.documentElement.setAttribute('data-dark',d?'1':'');
+  if(!d)document.documentElement.removeAttribute('data-dark');
+  setState({dark:d});
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+function render(){
+  const root=document.getElementById('root');
+  root.innerHTML=`
+    <div class="screen">
+      ${renderHeader()}
+      ${appState.screen==='start'?renderStart():appState.screen==='quiz'?renderQuiz():renderEnd()}
+    </div>
+  `;
+  attachEvents();
+}
+
+function renderHeader(){
+  return `
+    <div class="hdr">
+      <div class="logo">
+        <div class="logo-icon">🇮🇳</div>
+        <div>
+          <div class="logo-text">Which State Am I?</div>
+          <div style="font-size:10px;color:var(--gray-500);margin-top:-2px">India Geography Quiz</div>
+        </div>
+      </div>
+      <div class="hdr-right">
+        ${appState.screen==='quiz'?`<span style="font-size:12px;font-weight:700;color:var(--saffron)">Q${appState.qIndex+1}/${appState.quiz.length}</span>`:''}
+        <button class="icon-btn" id="btn-dark" title="Toggle dark mode">${appState.dark?'☀️':'🌙'}</button>
+        ${appState.screen!=='start'?`<button class="icon-btn" id="btn-home" title="Home">🏠</button>`:''}
+      </div>
+    </div>`;
+}
+
+function renderStart(){
+  const lb=appState.leaderboard;
+  return `
+    <div class="start-card">
+      <div class="start-hero">🗺️</div>
+      <div class="start-title">Which State Am I?</div>
+      <div class="start-sub">Test your knowledge of India's incredible diversity — from monsoon forests to desert dunes, from ancient temples to Silicon Valleys. Guess the state from clues about culture, food, monuments, and nature.</div>
+      <div class="features-grid">
+        <div class="feat-item"><div class="feat-icon">🧩</div><div class="feat-text">28 states & territories with rich clue sets</div></div>
+        <div class="feat-item"><div class="feat-icon">⏱️</div><div class="feat-text">Countdown timer — faster answers earn bonus points</div></div>
+        <div class="feat-item"><div class="feat-icon">🏆</div><div class="feat-text">Leaderboard & achievement badges</div></div>
+        <div class="feat-item"><div class="feat-icon">💡</div><div class="feat-text">Reveal extra clues if you're stuck</div></div>
+      </div>
+      <div style="margin:16px 0 8px;font-weight:700;font-size:13px;color:var(--gray-700)">Choose Difficulty</div>
+      <div class="diff-row">
+        <button class="diff-btn ${appState.diff==='easy'?'active-easy':''}" data-diff="easy">🟢 Easy</button>
+        <button class="diff-btn ${appState.diff==='medium'?'active-medium':''}" data-diff="medium">🟡 Medium</button>
+        <button class="diff-btn ${appState.diff==='hard'?'active-hard':''}" data-diff="hard">🔴 Hard</button>
+      </div>
+      <div style="font-size:11px;color:var(--gray-500);margin-bottom:20px">
+        ${appState.diff==='easy'?'1 clue · 30 seconds · relaxed pace':''}
+        ${appState.diff==='medium'?'2 clues · 20 seconds · balanced challenge':''}
+        ${appState.diff==='hard'?'3 clues · 12 seconds · expert mode':''}
+      </div>
+      <button class="btn btn-primary" id="btn-start" style="width:100%;justify-content:center;font-size:16px;padding:16px">
+        Start Quiz 🚀
+      </button>
+    </div>
+    ${lb.length>0?`
+    <div class="lb-card">
+      <div class="lb-title">🏆 Leaderboard <span style="font-size:11px;font-weight:400;color:var(--gray-500);margin-left:4px">Top 5</span></div>
+      ${lb.slice(0,5).map((e,i)=>`
+        <div class="lb-row">
+          <div class="lb-rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i+1}</div>
+          <div class="lb-name">${e.name}</div>
+          <div class="lb-diff">${e.diff}</div>
+          <div class="lb-score">${e.score}/${e.total}</div>
+          <div style="font-size:11px;color:var(--gray-500)">+${e.timeBonus||0}s</div>
+        </div>`).join('')}
+    </div>`:''}
+  `;
+}
+
+function renderQuiz(){
+  const q=appState.quiz[appState.qIndex];
+  const revealed=q.clues.slice(0,appState.cluesRevealed);
+  const canReveal=appState.cluesRevealed<q.clues.length&&appState.answered===null;
+  const timePct=(appState.timeLeft/TIMERS[appState.diff])*100;
+  const timeColor=timePct>60?'linear-gradient(90deg,#22C55E,#86EFAC)':timePct>30?'linear-gradient(90deg,#F59E0B,#FCD34D)':'linear-gradient(90deg,#EF4444,#FCA5A5)';
+  const letters=['A','B','C','D'];
+  return `
+    <div class="score-strip">
+      <div class="score-card"><div class="score-val">${appState.score}</div><div class="score-lbl">Score</div></div>
+      <div class="score-card"><div class="score-val" style="color:var(--green)">${appState.qIndex+1}</div><div class="score-lbl">Question</div></div>
+      <div class="score-card"><div class="score-val" style="color:var(--gold)">${appState.timeBonus}</div><div class="score-lbl">Time Bonus</div></div>
+      <div class="score-card"><div class="score-val" id="timer-lbl" style="color:${appState.timeLeft<=5?'#EF4444':'var(--navy)'}">${appState.timeLeft}s</div><div class="score-lbl">Time Left</div></div>
+    </div>
+    <div class="prog-bar-wrap"><div class="prog-bar" style="width:${((appState.qIndex)/appState.quiz.length)*100}%"></div></div>
+    <div class="timer-wrap"><div class="timer-bar" id="timer-bar" style="width:${timePct}%;background:${timeColor}"></div></div>
+    <div class="q-card">
+      <div class="q-meta">
+        <div class="q-num">Question ${appState.qIndex+1} of ${appState.quiz.length}</div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <span style="font-size:10px;padding:2px 8px;border-radius:10px;background:${appState.diff==='easy'?'#DCFCE7':appState.diff==='medium'?'#FEF9C3':'#FEE2E2'};color:${appState.diff==='easy'?'#166534':appState.diff==='medium'?'#713F12':'#991B1B'};font-weight:700;text-transform:uppercase;letter-spacing:.5px">${appState.diff}</span>
+        </div>
+      </div>
+      <div style="font-size:18px;font-weight:700;margin-bottom:12px;color:var(--gray-900)">Which Indian state am I? 🤔</div>
+      ${revealed.map((clue,i)=>`
+        <div class="clue-section" style="${i>0?'margin-top:10px':''}">
+          <div style="display:flex;align-items:center;gap:8px;margin-bottom:6px">
+            <div class="clue-icon" style="font-size:24px;margin-bottom:0">${clue.icon}</div>
+            <div>
+              <div class="clue-label">${i===0?'Clue 1':`Clue ${i+1}`}</div>
+              <span class="tag tag-${clue.tag}">${clue.type}</span>
+            </div>
+          </div>
+          <div class="clue-text">${clue.text}</div>
+        </div>
+      `).join('')}
+      ${canReveal?`<button class="more-clue-btn" id="btn-reveal">💡 Reveal another clue <span style="font-size:10px;color:var(--gray-400)">(${q.clues.length-appState.cluesRevealed} left)</span></button>`:''}
+      <div class="options-grid" style="margin-top:16px">
+        ${q.options.map((opt,i)=>{
+          let cls='opt-btn';
+          if(appState.answered){
+            if(opt.name===q.state.name)cls+=' correct';
+            else if(opt.name===appState.answered.chosen&&!appState.answered.correct)cls+=' wrong';
+          }
+          return `<button class="opt-btn ${appState.answered&&opt.name===q.state.name?'correct':appState.answered&&opt.name===appState.answered.chosen&&!appState.answered.correct?'wrong':''}" 
+            data-answer="${opt.name}" ${appState.answered?'disabled':''}>
+            <div class="opt-letter">${appState.answered&&opt.name===q.state.name?'✓':appState.answered&&opt.name===appState.answered.chosen&&!appState.answered.correct?'✗':letters[i]}</div>
+            ${opt.name}
+          </button>`;
+        }).join('')}
+      </div>
+      ${appState.answered?`
+        <div class="feedback ${appState.answered.correct?'correct':'wrong'}">
+          ${appState.answered.chosen==='__timeout__'?`⏰ <strong>Time's up!</strong> The answer was <strong>${q.state.name}</strong>.`:
+          appState.answered.correct?`✅ <strong>Correct!</strong> That's <strong>${q.state.name}</strong>!`:
+          `❌ <strong>Not quite.</strong> The answer was <strong>${q.state.name}</strong>.`}
+          <div class="fun-fact">💡 Fun fact: ${q.state.funFact}</div>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:12px">
+          <button class="btn btn-primary" id="btn-next">
+            ${appState.qIndex+1>=appState.quiz.length?'See Results 🎉':'Next Question →'}
+          </button>
+        </div>
+      `:`
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px">
+          <button class="skip-btn" id="btn-skip">Skip →</button>
+          <div style="font-size:11px;color:var(--gray-500)">Select the correct state</div>
+        </div>
+      `}
+    </div>
+  `;
+}
+
+function renderEnd(){
+  const score=appState.score;
+  const total=appState.quiz.length;
+  const pct=Math.round((score/total)*100);
+  const {emoji,title,msg}=getResultMsg(pct);
+  const saved=appState.leaderboard.some(e=>e.score===score&&e.diff===appState.diff&&e.timeBonus===appState.timeBonus);
+  return `
+    <div class="end-card">
+      <div class="result-emoji">${emoji}</div>
+      <div class="result-title" style="color:var(--saffron)">${title}</div>
+      <div class="result-score-big">${score}<span style="font-size:28px;color:var(--gray-300)">/${total}</span></div>
+      <div class="result-score-sub">Time Bonus: <strong style="color:var(--gold)">+${appState.timeBonus}s</strong> · ${pct}% accuracy</div>
+      <div class="result-msg">${msg}</div>
+      <div style="margin:12px 0;padding:14px;background:var(--gray-100);border-radius:var(--radius-sm);display:flex;gap:20px;justify-content:center;flex-wrap:wrap">
+        <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:var(--green)">${score}</div><div style="font-size:11px;color:var(--gray-500)">Correct</div></div>
+        <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:#EF4444">${total-score}</div><div style="font-size:11px;color:var(--gray-500)">Wrong</div></div>
+        <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:var(--gold)">${appState.timeBonus}</div><div style="font-size:11px;color:var(--gray-500)">Time Bonus</div></div>
+        <div style="text-align:center"><div style="font-size:22px;font-weight:800;color:var(--navy)">${pct}%</div><div style="font-size:11px;color:var(--gray-500)">Accuracy</div></div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-weight:700;font-size:13px;margin-bottom:10px">🏅 Your Badges</div>
+      <div class="badges-wrap">
+        ${BADGES.map(b=>{
+          const earned=appState.earnedBadges.find(e=>e.id===b.id);
+          return `<div class="badge ${earned?'badge-earned':'badge-locked'}" title="${b.desc}">${b.icon} ${b.name}</div>`;
+        }).join('')}
+      </div>
+      <div class="divider"></div>
+      <div style="font-weight:700;font-size:13px;margin-bottom:8px">💾 Save Your Score</div>
+      <div class="name-input-wrap">
+        <input class="name-input" id="player-name" type="text" maxlength="20" placeholder="Enter your name…" value="${appState.playerName}"/>
+        <button class="btn btn-green" id="btn-save">Save</button>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:8px">
+        <button class="btn btn-primary" id="btn-restart" style="flex:1;justify-content:center">🔄 Play Again</button>
+        <button class="btn btn-secondary" id="btn-home2" style="flex:1;justify-content:center">🏠 Home</button>
+      </div>
+    </div>
+    ${appState.leaderboard.length>0?`
+    <div class="lb-card">
+      <div class="lb-title">🏆 Leaderboard</div>
+      ${appState.leaderboard.map((e,i)=>`
+        <div class="lb-row" style="${e.score===score&&e.diff===appState.diff?'border:1px solid var(--saffron)':''}">
+          <div class="lb-rank ${i===0?'gold':i===1?'silver':i===2?'bronze':''}">${i+1}</div>
+          <div class="lb-name">${e.name}</div>
+          <div class="lb-diff">${e.diff}</div>
+          <div class="lb-score">${e.score}/${e.total}</div>
+          <div style="font-size:11px;color:var(--gray-500)">${e.date}</div>
+        </div>`).join('')}
+    </div>`:''}
+  `;
+}
+
+function getResultMsg(pct){
+  if(pct===100)return{emoji:'🌟',title:'India Master!',msg:'Extraordinary! You got every single answer right. You are a true connoisseur of Indian culture, history, and geography. India would be proud!'};
+  if(pct>=90)return{emoji:'🏆',title:'Expert Explorer!',msg:'Outstanding performance! You clearly have deep knowledge of India\'s diverse states, their culture, food, and history. Incredible work!'};
+  if(pct>=70)return{emoji:'🎯',title:'Culture Savant!',msg:'Great job! You know India well. A little more study of the northeast and tribal states might make you a perfect scorer next time.'};
+  if(pct>=50)return{emoji:'📚',title:'Curious Traveller',msg:'Good effort! India is a vast and complex country. Every quiz teaches you something new about its incredible 5,000-year-old civilization.'};
+  if(pct>=30)return{emoji:'🌱',title:'India Discoverer',msg:'You\'re on a journey of discovery! India has 28 states and 8 union territories, each with its own unique identity. Keep exploring!'};
+  return{emoji:'🗺️',title:'Start of a Journey',msg:'No worries — India is the world\'s most complex civilizational mosaic. Each question is an invitation to learn something amazing about this incredible land!'};
+}
+
+function attachEvents(){
+  document.getElementById('btn-dark')?.addEventListener('click',toggleDark);
+  document.getElementById('btn-home')?.addEventListener('click',()=>{ clearTimer(); setState({screen:'start'}); });
+  document.getElementById('btn-home2')?.addEventListener('click',()=>{ setState({screen:'start'}); });
+  document.getElementById('btn-start')?.addEventListener('click',startQuiz);
+  document.getElementById('btn-restart')?.addEventListener('click',startQuiz);
+  document.getElementById('btn-next')?.addEventListener('click',nextQuestion);
+  document.getElementById('btn-reveal')?.addEventListener('click',revealClue);
+  document.getElementById('btn-skip')?.addEventListener('click',()=>handleAnswer('__timeout__'));
+  document.getElementById('btn-save')?.addEventListener('click',()=>{
+    appState.playerName=document.getElementById('player-name')?.value||'Anonymous';
+    saveScore();
+  });
+  document.querySelectorAll('[data-diff]').forEach(btn=>{
+    btn.addEventListener('click',()=>setState({diff:btn.dataset.diff}));
+  });
+  document.querySelectorAll('[data-answer]').forEach(btn=>{
+    btn.addEventListener('click',()=>{
+      if(!appState.answered)handleAnswer(btn.dataset.answer);
+    });
+  });
+}
+
+render();
+</script>
+</body>
+</html>
